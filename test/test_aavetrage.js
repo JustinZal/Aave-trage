@@ -68,5 +68,8 @@ contract('Aave-Trage', accounts => {
 
         const finalBalance = await WETH.methods.balanceOf(user1).call();
         assert.equal(WITHDRAW_AMOUNT, finalBalance);
+
+        //Needed to run the test again
+        await WETH.methods.transfer(AAVETRAGE.address, finalBalance);
     })
 });
