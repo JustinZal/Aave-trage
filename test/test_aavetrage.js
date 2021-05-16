@@ -70,6 +70,6 @@ contract('Aave-Trage', accounts => {
         assert.equal(WITHDRAW_AMOUNT, finalBalance);
 
         //Needed to run the test again
-        await WETH.methods.transfer(AAVETRAGE.address, finalBalance);
+        await WETH.methods.transfer(daiAddress, finalBalance).send({from: user1});
     })
 });
