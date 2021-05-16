@@ -85,7 +85,7 @@ contract AaveTrage {
         ILendingPool(aave).borrow(assetToBorrow, amount, 2, 0, address(this));
     }
 
-    function _swap(address from, address to, uint256 amount) internal returns (uint256 balance) {
+    function _swap(address from, address to, uint256 amount) internal {
         IERC20(from).approve(uniswap, amount);
         address[] memory path = new address[](2);
         path[0] = from;
