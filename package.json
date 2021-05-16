@@ -5,8 +5,8 @@
     "dotenv": "^9.0.2",
     "ethers": "^4.0.0-beta.3",
     "ganache-core": "^2.13.2",
+    "lodash": "^4.17.21",
     "solc": "^0.8.4",
-    "truffle-hdwallet-provider": "^1.0.17",
-    "truffle-privatekey-provider": "^1.5.0"
+    "truffle-hdwallet-provider": "^1.0.17"
   }
 }

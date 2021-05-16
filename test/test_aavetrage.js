@@ -56,6 +56,7 @@ contract('Aave-Trage', accounts => {
         const chainLink = '0x514910771af9ca656af840dff83e8264ecf986ca';
         const TEST_AMOUNT = web3.utils.toWei('1', "ether");
         const AMOUNT_TO_BORROW = web3.utils.toWei('2000', 'ether');
+        const WITHDRAW_AMOUNT = '1000';
 
         //Convert ETH to WETH
         const WETH = await new web3.eth.Contract(weth.abi, wrappedETHaddress);
@@ -63,8 +64,9 @@ contract('Aave-Trage', accounts => {
         await WETH.methods.transfer(AAVETRAGE.address, TEST_AMOUNT).send({from: user1});
 
         await AAVETRAGE.guap(wrappedETHaddress, TEST_AMOUNT, daiAddress, AMOUNT_TO_BORROW, chainLink, {from: user1});
+        await AAVETRAGE.shut(chainLink, daiAddress, wrappedETHaddress, WITHDRAW_AMOUNT);
 
-
-
+        const finalBalance = await WETH.methods.balanceOf(user1).call();
+        assert.equal(WITHDRAW_AMOUNT, finalBalance);
     })
 });

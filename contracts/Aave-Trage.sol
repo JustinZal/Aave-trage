@@ -5,6 +5,7 @@ import { ILendingPool } from '@aave/protocol-v2/contracts/interfaces/ILendingPoo
 import { DataTypes } from '@aave/protocol-v2/contracts/protocol/libraries/types/DataTypes.sol';
 import { IERC20 } from '@uniswap/v2-periphery/contracts/interfaces/IERC20.sol';
 import { IUniswapV2Router02 } from '@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol';
+import { IAToken } from '@aave/protocol-v2/contracts/interfaces/IAToken.sol';
 
 contract AaveTrage {
 
@@ -51,6 +52,28 @@ contract AaveTrage {
 
         uint256 arbitrageBalance = IERC20(arbitrageAsset).balanceOf(address(this));
         _deposit(arbitrageAsset, arbitrageBalance);
+    }
+
+    function shut(address arbitrageAsset, address borrowedAsset, address collateral, uint256 withdrawAmount) external {
+        _withdraw(arbitrageAsset, type(uint).max);
+
+        uint256 arbitrageBalance = IERC20(arbitrageAsset).balanceOf(address(this));
+        _swap(arbitrageAsset, borrowedAsset, arbitrageBalance);
+
+        uint256 borrowedBalance = IERC20(borrowedAsset).balanceOf(address(this));
+        uint256 payback = _repay(borrowedAsset, borrowedBalance);
+
+        _withdraw(collateral, withdrawAmount);
+        IERC20(collateral).transfer(msg.sender, withdrawAmount);
+    }
+
+    function _repay(address asset, uint256 amount) internal returns (uint256 payback) {
+        IERC20(asset).approve(aave, amount);
+        payback = ILendingPool(aave).repay(asset, amount, 2, address(this));
+    }
+
+    function _withdraw(address asset, uint256 amount) internal {
+        ILendingPool(aave).withdraw(asset, amount, address(this));
     }
 
     function _deposit(address collateral, uint256 amount) internal {
